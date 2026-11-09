@@ -338,7 +338,7 @@ preferred-source behavior. Status: `Source followed the Windows default to 'X'.`
   - `ChannelRetryBudget` limits watchdog auto-reactivation attempts for a
     persistently failing output. Resume recovery, fresh device appearance and
     explicit user toggles reset the budget; forced restart attempts bypass it.
-- `GainToBrushConverter` - slider coloring (UI only).
+- `GainToBrushConverter` - gain label coloring from the displayed (rounded) percent (UI only).
 
 ### Per-app mixer (slide-out panel)
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using NAudio.CoreAudioApi;
 using NAudio.CoreAudioApi.Interfaces;
 
@@ -12,6 +13,10 @@ namespace AudioHQ.Core;
 /// </summary>
 public static class AppSessions
 {
+    // The panel refreshes every 2s; logging the count on every snapshot floods the log
+    // (issue #11), so only a change is written.
+    private static int _lastLoggedCount = -1;
+
     /// <summary>
     /// Sessions currently present on the default render device, newest snapshot. Never
     /// throws; returns an empty list if the device or its session list cannot be read.
@@ -73,7 +78,8 @@ public static class AppSessions
             }
         }
 
-        Log.Write($"AppSessions: {result.Count} session(s) on default render device");
+        if (Interlocked.Exchange(ref _lastLoggedCount, result.Count) != result.Count)
+            Log.Write($"AppSessions: {result.Count} session(s) on default render device");
         return result;
     }
 }

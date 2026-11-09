@@ -110,9 +110,18 @@
                                           CommandParameter="{Binding}" />
                             <TextBlock />
                         </DockPanel>
+                        <!-- Long device names are trimmed to two lines; the tooltip always
+                             carries the full name. -->
                         <TextBlock Text="{Binding Name}"
-                                   Margin="0,16,0,0" ToolTip="Double-click to rename"
+                                   Margin="0,16,0,0"
                                    MouseLeftButtonDown="Name_MouseLeftButtonDown">
+                            <TextBlock.ToolTip>
+                                <TextBlock>
+                                    <Run Text="{Binding Name, Mode=OneWay}" />
+                                    <LineBreak />
+                                    <Run Text="Double-click to rename" />
+                                </TextBlock>
+                            </TextBlock.ToolTip>
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock" BasedOn="{StaticResource StripName}">
                                     <Style.Triggers>

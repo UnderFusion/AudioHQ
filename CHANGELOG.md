@@ -3,6 +3,18 @@
 All notable changes to AudioHQ. One entry per version bump
 (see the repository versioning conventions - patch bump on every edit batch).
 
+## 0.5.37 - 2026-11-09
+
+### Fixed
+- Gain/volume label stayed amber at 100% after a boost (#10). The fader is
+  continuous, so a displayed "100%" could really be 1.004 and still count as
+  boost; the colour is now judged on the same rounded percent the label shows.
+- Log flooding from the app mixer (#11). The 2 s refresh no longer writes the
+  session count on every snapshot (only when it changes), and a dead process
+  whose session Windows keeps around is logged once instead of every refresh.
+- Truncated device names on output strips (#12). Long names are still trimmed
+  to two lines on the strip, but the name's tooltip now shows the full name.
+
 ## 0.5.36 - 2026-07-18
 
 ### Fixed
