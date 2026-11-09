@@ -20,8 +20,11 @@ public sealed class GainToBrushConverter : IValueConverter
         _red ??= ThemeResources.Brush("Brush.FaderRed");
 
         double gain = value is double d ? d : 0;
+        // Judge the colour on the same rounded percent the label shows: the fader is
+        // continuous, so a displayed "100%" can really be 1.004 and must still read green.
+        double percent = Math.Round(gain * 100);
         // Green up to (and at) 100% unity; amber in the boost zone; red near max boost.
-        return gain <= 1.0 ? _green : gain <= 1.25 ? _amber : _red;
+        return percent <= 100 ? _green : percent <= 125 ? _amber : _red;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

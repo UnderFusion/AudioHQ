@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using NAudio.CoreAudioApi;
 
@@ -15,6 +16,9 @@ namespace AudioHQ.Core;
 /// </summary>
 public sealed class AppSession : IAppSessionInfo
 {
+    // Dead pids whose lookup failure was already logged (see ResolveProcess).
+    private static readonly ConcurrentDictionary<uint, byte> FailedPidsLogged = new();
+
     // Rooting the session's own volume object is enough to keep it usable: its COM reference
     // is independent of the device and the enumerator that produced it, so it survives both
     // going away (the caller disposes the device right after taking the snapshot).
@@ -111,7 +115,10 @@ public sealed class AppSession : IAppSessionInfo
         }
         catch (Exception ex)
         {
-            Log.Write($"AppSession: process {pid} lookup failed: {ex.Message}");
+            // Windows keeps sessions of exited processes around, and the 2s refresh would
+            // log the same dead pid forever (issue #11): log each pid once.
+            if (FailedPidsLogged.TryAdd(pid, 0))
+                Log.Write($"AppSession: process {pid} lookup failed: {ex.Message}");
             return ("", Clean(displayName) ?? "Unknown");
         }
     }
